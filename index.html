@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Interactive SVG Editor</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+  <h1 class="title">Svg Editor</h1>
+  <div class="container">
+    <div class="glass-container">
+
+      <div>
+        <label>Upload SVG:</label>
+        <input type="file" id="fileInput" />
+        <button id="export-btn" onclick="downloadSvg()">Export</button>
+      </div>
+
+      <div style="margin-top: 10px;">
+        <label>BG:</label>
+        <input type="color" id="fillColorPicker" />
+        <label style="margin-left: 10px;">STROKE:</label>
+        <input type="color" id="strokeColorPicker" />
+        <button onclick="applySelectedColors()">Apply Colors</button>
+      </div>
+
+      <div id="svgContainer"></div>
+
+
+    </div>
+    <textarea readonly id="svgCode"></textarea>
+
+  </div>
+  <script>
+    let currentSvgDoc = null;
+    let selectedElement = null;
+    let fileName = null;
+    document.getElementById("fileInput").addEventListener("change", handleFileUpload);
+
+    function handleFileUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      fileName = file.name;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const svgString = e.target.result;
+        const parser = new DOMParser();
+        const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+        if (svgDoc && svgDoc.documentElement) {
+          currentSvgDoc = svgDoc.documentElement;
+          renderSVG();
+        } else {
+          alert("Invalid SVG!");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    function renderSVG() {
+      const container = document.getElementById("svgContainer");
+      container.innerHTML = "";
+      if (currentSvgDoc) {
+        const viewBox = currentSvgDoc.getAttribute("viewBox");
+        if (!viewBox) {
+          const width = currentSvgDoc.getAttribute("width") || 100;
+          const height = currentSvgDoc.getAttribute("height") || 100;
+          currentSvgDoc.setAttribute("viewBox", `0 0 ${width} ${height}`);
+        }
+        container.appendChild(currentSvgDoc);
+        container.addEventListener("click", handleElementClick);
+      }
+      renderSvgCode();
+    }
+
+    function handleElementClick(event) {
+      if (!currentSvgDoc) return;
+
+      const clickedElement = event.target;
+
+      if (clickedElement === currentSvgDoc || clickedElement.id === "svgContainer") {
+        return;
+      }
+
+      if (selectedElement) {
+        selectedElement.classList.remove("highlight");
+      }
+
+      selectedElement = clickedElement;
+      selectedElement.classList.add("highlight");
+    }
+
+    function applySelectedColors() {
+      if (!selectedElement) {
+        alert("Please select an element by clicking on it!");
+        return;
+      }
+
+      const fillColor = document.getElementById("fillColorPicker").value;
+      const strokeColor = document.getElementById("strokeColorPicker").value;
+
+      if (selectedElement.hasAttribute("fill")) {
+        selectedElement.setAttribute("fill", fillColor);
+      }
+      if (selectedElement.hasAttribute("stroke")) {
+        selectedElement.setAttribute("stroke", strokeColor);
+      } else {
+        selectedElement.style.stroke = strokeColor;
+      }
+      renderSvgCode();
+    }
+
+    function renderSvgCode() {
+      const container = document.getElementById("svgCode");
+      container.value = document.getElementById("svgContainer").innerHTML;
+    }
+
+    function downloadSvg() {
+      if (!currentSvgDoc) {
+        alert("No SVG loaded to export!");
+        return;
+      }
+
+      const svgString = new XMLSerializer().serializeToString(currentSvgDoc);
+      const blob = new Blob([svgString], { type: "image/svg+xml" });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "edited-" + fileName;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+
+</html>
