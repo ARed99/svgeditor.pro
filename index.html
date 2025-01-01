@@ -1,141 +1,398 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Interactive SVG Editor</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+      .highlight {
+        outline: 2px solid #443a3a;
+        outline-style: dashed;
+        z-index: 90000;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Interactive SVG Editor</title>
-  <link rel="stylesheet" href="styles.css">
-</head>
+      textarea {
+        resize: none;
+      }
+      #svgContainer {
+        display: flex;
+        justify-content: center;
+      }
+      #svgContainer svg {
+        width: 400px;
+        height: 400px;
+      }
+    </style>
+  </head>
 
-<body>
-  <h1 class="title">Svg Editor</h1>
-  <div class="container">
-    <div class="glass-container">
+  <body
+    class="bg-gradient-to-r from-gray-100 via-white to-gray-100 text-gray-900 font-sans"
+  >
+    <header
+      class="bg-gradient-to-r from-blue-600 to-blue-400 text-white py-5 shadow-lg"
+    >
+      <h1 class="text-3xl font-extrabold text-center">
+        SVGEditor.<span class="p-0 m-0 italic text-red-600">pro</span>
+      </h1>
+    </header>
 
-      <div>
-        <label>Upload SVG:</label>
-        <input type="file" id="fileInput" />
-        <button id="export-btn" onclick="downloadSvg()">Export</button>
+    <main class="max-w-6xl mx-auto px-6 py-8">
+      <div class="bg-white rounded-2xl shadow-xl p-2">
+        <div class="flex flex-col lg:flex-row lg:items-center gap-6">
+          <div class="flex flex-wrap gap-6 items-center">
+            <div>
+              <label class="font-semibold text-gray-700">Upload SVG:</label>
+              <input
+                type="file"
+                id="fileInput"
+                class="block mt-2 border border-gray-300 rounded-md px-3 py-2"
+              />
+            </div>
+          </div>
+
+          <div class="flex items-center gap-6">
+            <div>
+              <label class="font-semibold text-gray-700">Background:</label>
+              <input
+                type="color"
+                id="fillColorPicker"
+                class="w-12 h-12 p-2 border rounded-lg shadow-md"
+              />
+            </div>
+            <div>
+              <label class="font-semibold text-gray-700">Stroke:</label>
+              <input
+                type="color"
+                id="strokeColorPicker"
+                class="w-12 h-12 p-2 border rounded-lg shadow-md"
+              />
+            </div>
+            <button
+              onclick="applySelectedColors()"
+              class="transition transform hover:scale-110"
+            >
+              <svg
+                width="44px"
+                height="44px"
+                viewBox="-10 -10 120.00 120.00"
+                xmlns="http://www.w3.org/2000/svg"
+                version="1.1"
+                fill="#000000"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    style="fill: #09ee09; stroke: #007300; stroke-width: 3"
+                    d="M 4,36 C 8,42 26,73 31,93 38,82 44,63 98,12 78,22 51,44 33,60 26,55 18,44 4,36 z"
+                  ></path>
+                </g>
+              </svg>
+            </button>
+            <button
+              onclick="undo()"
+              class="hover:bg-gray-200 p-2 rounded-lg transition"
+            >
+              <svg
+                width="44px"
+                height="44px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                transform="matrix(-1, 0, 0, 1, 0, 0)"
+                stroke="#000000"
+                stroke-width="0.672"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M16.4697 3.46967C16.7626 3.17678 17.2374 3.17678 17.5303 3.46967L20.5303 6.46967C20.8232 6.76256 20.8232 7.23744 20.5303 7.53033L17.5303 10.5303C17.2374 10.8232 16.7626 10.8232 16.4697 10.5303C16.1768 10.2374 16.1768 9.76256 16.4697 9.46967L18.1893 7.75H9.00001C8.05159 7.75 7.39042 7.75072 6.8778 7.79718C6.37549 7.84271 6.0899 7.92737 5.875 8.05144C5.53296 8.24892 5.24893 8.53295 5.05145 8.87499C4.92738 9.0899 4.84271 9.37548 4.79718 9.87779C4.75072 10.3904 4.75 11.0516 4.75 12C4.75 12.9484 4.75072 13.6096 4.79718 14.1222C4.84271 14.6245 4.92737 14.9101 5.05144 15.125C5.24892 15.467 5.53296 15.7511 5.875 15.9486C6.0899 16.0726 6.37549 16.1573 6.87779 16.2028C7.39041 16.2493 8.05158 16.25 9 16.25H16C16.4142 16.25 16.75 16.5858 16.75 17C16.75 17.4142 16.4142 17.75 16 17.75H8.96423C8.05998 17.75 7.3307 17.75 6.7424 17.6967C6.13605 17.6417 5.60625 17.5254 5.125 17.2476C4.55493 16.9185 4.08154 16.4451 3.75241 15.875C3.47455 15.3937 3.35826 14.8639 3.3033 14.2576C3.24998 13.6693 3.24999 12.94 3.25 12.0358V11.9642C3.24999 11.06 3.24999 10.3307 3.30331 9.74239C3.35826 9.13604 3.47456 8.60624 3.75241 8.12499C4.08154 7.55492 4.55493 7.08154 5.125 6.75241C5.60625 6.47456 6.13605 6.35826 6.7424 6.3033C7.33069 6.24998 8.05997 6.24999 8.96421 6.25L18.1893 6.25L16.4697 4.53033C16.1768 4.23744 16.1768 3.76256 16.4697 3.46967Z"
+                    fill="#000000"
+                  ></path>
+                </g>
+              </svg>
+            </button>
+            <button
+              onclick="redo()"
+              class="hover:bg-gray-200 p-2 rounded-lg transition"
+            >
+              <svg
+                width="44px"
+                height="44px"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                transform="matrix(1, 0, 0, 1, 0, 0)"
+                stroke="#000000"
+                stroke-width="0.672"
+              >
+                <g id="SVGRepo_bgCarrier" stroke-width="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M16.4697 3.46967C16.7626 3.17678 17.2374 3.17678 17.5303 3.46967L20.5303 6.46967C20.8232 6.76256 20.8232 7.23744 20.5303 7.53033L17.5303 10.5303C17.2374 10.8232 16.7626 10.8232 16.4697 10.5303C16.1768 10.2374 16.1768 9.76256 16.4697 9.46967L18.1893 7.75H9.00001C8.05159 7.75 7.39042 7.75072 6.8778 7.79718C6.37549 7.84271 6.0899 7.92737 5.875 8.05144C5.53296 8.24892 5.24893 8.53295 5.05145 8.87499C4.92738 9.0899 4.84271 9.37548 4.79718 9.87779C4.75072 10.3904 4.75 11.0516 4.75 12C4.75 12.9484 4.75072 13.6096 4.79718 14.1222C4.84271 14.6245 4.92737 14.9101 5.05144 15.125C5.24892 15.467 5.53296 15.7511 5.875 15.9486C6.0899 16.0726 6.37549 16.1573 6.87779 16.2028C7.39041 16.2493 8.05158 16.25 9 16.25H16C16.4142 16.25 16.75 16.5858 16.75 17C16.75 17.4142 16.4142 17.75 16 17.75H8.96423C8.05998 17.75 7.3307 17.75 6.7424 17.6967C6.13605 17.6417 5.60625 17.5254 5.125 17.2476C4.55493 16.9185 4.08154 16.4451 3.75241 15.875C3.47455 15.3937 3.35826 14.8639 3.3033 14.2576C3.24998 13.6693 3.24999 12.94 3.25 12.0358V11.9642C3.24999 11.06 3.24999 10.3307 3.30331 9.74239C3.35826 9.13604 3.47456 8.60624 3.75241 8.12499C4.08154 7.55492 4.55493 7.08154 5.125 6.75241C5.60625 6.47456 6.13605 6.35826 6.7424 6.3033C7.33069 6.24998 8.05997 6.24999 8.96421 6.25L18.1893 6.25L16.4697 4.53033C16.1768 4.23744 16.1768 3.76256 16.4697 3.46967Z"
+                    fill="#000000"
+                  ></path>
+                </g>
+              </svg>
+            </button>
+            <button
+              id="export-btn"
+              onclick="downloadSvg()"
+              class="hover:bg-gray-200 p-2 rounded-lg transition"
+            >
+              <svg
+                width="54px"
+                height="54px"
+                viewBox="-2.4 -2.4 28.80 28.80"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g id="SVGRepo_iconCarrier">
+                  <path
+                    fill-rule="evenodd"
+                    clip-rule="evenodd"
+                    d="M2 12C2 7.28595 2 4.92893 3.46447 3.46447C4.92893 2 7.28595 2 12 2C16.714 2 19.0711 2 20.5355 3.46447C22 4.92893 22 7.28595 22 12C22 16.714 22 19.0711 20.5355 20.5355C19.0711 22 16.714 22 12 22C7.28595 22 4.92893 22 3.46447 20.5355C2 19.0711 2 16.714 2 12ZM11.25 6C11.25 5.58579 11.5858 5.25 12 5.25C12.4142 5.25 12.75 5.58579 12.75 6L12.75 13.1893L15.4697 10.4697C15.7626 10.1768 16.2374 10.1768 16.5303 10.4697C16.8232 10.7626 16.8232 11.2374 16.5303 11.5303L12.5303 15.5303C12.2374 15.8232 11.7626 15.8232 11.4697 15.5303L7.46967 11.5303C7.17678 11.2374 7.17678 10.7626 7.46967 10.4697C7.76256 10.1768 8.23744 10.1768 8.53033 10.4697L11.25 13.1893L11.25 6ZM6 17C6 16.5858 6.33579 16.25 6.75 16.25H17.25C17.6642 16.25 18 16.5858 18 17C18 17.4142 17.6642 17.75 17.25 17.75H6.75C6.33579 17.75 6 17.4142 6 17Z"
+                    fill="#1C274C"
+                  ></path>
+                </g>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="mt-8 border rounded-lg p-4">
+          <div
+            id="svgContainer"
+            class="bg-gray-100 border border-gray-300 p-4 rounded-lg"
+          >
+            <h2 class="font-bold text-lg text-gray-700">SVG Preview</h2>
+            <!-- SVG content will appear here -->
+          </div>
+        </div>
       </div>
-
-      <div style="margin-top: 10px;">
-        <label>BG:</label>
-        <input type="color" id="fillColorPicker" />
-        <label style="margin-left: 10px;">STROKE:</label>
-        <input type="color" id="strokeColorPicker" />
-        <button onclick="applySelectedColors()">Apply Colors</button>
+    </main>
+    <section id="how-it-works" class="bg-gray-50 py-5 px-4">
+      <div class="max-w-4xl mx-auto text-center">
+        <h2 class="text-2xl font-bold text-gray-800 mb-4">
+          ✨ How This SVG Editor Works ✨
+        </h2>
+        <p class="text-gray-600 mb-6">
+          Our app simplifies SVG editing, making it easy for anyone to create,
+          customize, and perfect scalable vector graphics. With a user-friendly
+          interface, you can edit, transform, and save SVG files quickly and
+          efficiently. 🎨
+        </p>
       </div>
+      <div
+        class="max-w-6xl mx-auto grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8"
+      >
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+            1️⃣ Upload Your SVG
+          </h3>
+          <p class="text-gray-600">
+            Start by uploading your SVG file 📤 or choose from a selection of
+            pre-designed templates to get started.
+          </p>
+        </div>
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+            2️⃣ Edit Your Design
+          </h3>
+          <p class="text-gray-600">
+            Use our editing tools to transform your SVG. ✂️ Flip, rotate,
+            resize, change colors, or adjust paths easily to match your vision.
+          </p>
+        </div>
+        <div class="bg-white shadow-md rounded-lg p-6">
+          <h3 class="text-lg font-semibold text-gray-800 mb-2">
+            3️⃣ Save and Download
+          </h3>
+          <p class="text-gray-600">
+            Once your edits are complete, save your work 💾 or download the SVG
+            file to use in your projects. 📂
+          </p>
+        </div>
+      </div>
+    </section>
+    <footer class="bg-gray-800 text-white py-2">
+      <div class="max-w-6xl mx-auto text-center">
+        <p class="text-sm">
+          &copy; 2025
+          <a href="https://svgeditor.pro" class="text-blue-400 hover:underline"
+            >SVGEditor.pro</a
+          >. All rights reserved. 🖌️
+        </p>
+        <p class="text-xs mt-2">
+          Designed to make SVG editing effortless and enjoyable. 🚀
+        </p>
+      </div>
+    </footer>
 
-      <div id="svgContainer"></div>
+    <script>
+      let currentSvgDoc = null;
+      let selectedElement = null;
+      let fileName = null;
+      const historyStack = [];
+      const redoStack = [];
 
+      document
+        .getElementById("fileInput")
+        .addEventListener("change", handleFileUpload);
 
-    </div>
-    <textarea readonly id="svgCode"></textarea>
+      function saveState() {
+        if (currentSvgDoc) {
+          const clone = currentSvgDoc.cloneNode(true);
+          historyStack.push(clone);
+          redoStack.length = 0; // Clear redo stack on new action
+        }
+      }
 
-  </div>
-  <script>
-    let currentSvgDoc = null;
-    let selectedElement = null;
-    let fileName = null;
-    document.getElementById("fileInput").addEventListener("change", handleFileUpload);
+      function handleFileUpload(event) {
+        const file = event.target.files[0];
+        if (!file) return;
+        fileName = file.name;
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const svgString = e.target.result;
+          const parser = new DOMParser();
+          const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
+          if (svgDoc && svgDoc.documentElement) {
+            currentSvgDoc = svgDoc.documentElement;
+            saveState(); // Save the initial state
+            renderSVG();
+          } else {
+            alert("Invalid SVG!");
+          }
+        };
+        reader.readAsText(file);
+      }
 
-    function handleFileUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      fileName = file.name;
-      const reader = new FileReader();
-      reader.onload = (e) => {
-        const svgString = e.target.result;
-        const parser = new DOMParser();
-        const svgDoc = parser.parseFromString(svgString, "image/svg+xml");
-        if (svgDoc && svgDoc.documentElement) {
-          currentSvgDoc = svgDoc.documentElement;
+      function renderSVG() {
+        const container = document.getElementById("svgContainer");
+        container.innerHTML = "";
+        if (currentSvgDoc) {
+          const viewBox = currentSvgDoc.getAttribute("viewBox");
+          if (!viewBox) {
+            const width = currentSvgDoc.getAttribute("width") || 100;
+            const height = currentSvgDoc.getAttribute("height") || 100;
+            currentSvgDoc.setAttribute("viewBox", `0 0 ${width} ${height}`);
+          }
+          container.appendChild(currentSvgDoc);
+          container.addEventListener("click", handleElementClick);
+        }
+        renderSvgCode();
+      }
+
+      function handleElementClick(event) {
+        if (!currentSvgDoc) return;
+
+        const clickedElement = event.target;
+
+        const fillColor = document.getElementById("fillColorPicker");
+        const strokeColor = document.getElementById("strokeColorPicker");
+
+        fillColor.value = clickedElement.getAttribute("fill");
+        strokeColor.value = clickedElement.getAttribute("stroke");
+
+        if (
+          clickedElement === currentSvgDoc ||
+          clickedElement.id === "svgContainer"
+        ) {
+          return;
+        }
+
+        if (selectedElement) {
+          selectedElement.classList.remove("highlight");
+        }
+
+        selectedElement = clickedElement;
+        selectedElement.classList.add("highlight");
+      }
+
+      function applySelectedColors() {
+        if (!selectedElement) {
+          alert("Please select an element by clicking on it!");
+          return;
+        }
+        saveState(); // Save state before applying changes
+
+        const fillColor = document.getElementById("fillColorPicker").value;
+        const strokeColor = document.getElementById("strokeColorPicker").value;
+
+        if (selectedElement.hasAttribute("fill")) {
+          selectedElement.setAttribute("fill", fillColor);
+        }
+        if (selectedElement.hasAttribute("stroke")) {
+          selectedElement.setAttribute("stroke", strokeColor);
+        } else {
+          selectedElement.style.stroke = strokeColor;
+        }
+        renderSvgCode();
+      }
+
+      function renderSvgCode() {
+        const container = document.getElementById("svgCode");
+        container.value = document.getElementById("svgContainer").innerHTML;
+      }
+
+      function undo() {
+        if (historyStack.length > 0) {
+          redoStack.push(currentSvgDoc.cloneNode(true)); // Save current state to redo stack
+          currentSvgDoc = historyStack.pop();
           renderSVG();
         } else {
-          alert("Invalid SVG!");
+          alert("No more actions to undo!");
         }
-      };
-      reader.readAsText(file);
-    }
+      }
 
-    function renderSVG() {
-      const container = document.getElementById("svgContainer");
-      container.innerHTML = "";
-      if (currentSvgDoc) {
-        const viewBox = currentSvgDoc.getAttribute("viewBox");
-        if (!viewBox) {
-          const width = currentSvgDoc.getAttribute("width") || 100;
-          const height = currentSvgDoc.getAttribute("height") || 100;
-          currentSvgDoc.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      function redo() {
+        if (redoStack.length > 0) {
+          historyStack.push(currentSvgDoc.cloneNode(true)); // Save current state to history stack
+          currentSvgDoc = redoStack.pop();
+          renderSVG();
+        } else {
+          alert("No more actions to redo!");
         }
-        container.appendChild(currentSvgDoc);
-        container.addEventListener("click", handleElementClick);
-      }
-      renderSvgCode();
-    }
-
-    function handleElementClick(event) {
-      if (!currentSvgDoc) return;
-
-      const clickedElement = event.target;
-
-      if (clickedElement === currentSvgDoc || clickedElement.id === "svgContainer") {
-        return;
       }
 
-      if (selectedElement) {
-        selectedElement.classList.remove("highlight");
+      function downloadSvg() {
+        if (!currentSvgDoc) {
+          alert("No SVG loaded to export!");
+          return;
+        }
+
+        const svgString = new XMLSerializer().serializeToString(currentSvgDoc);
+        const blob = new Blob([svgString], { type: "image/svg+xml" });
+        const url = URL.createObjectURL(blob);
+
+        const link = document.createElement("a");
+        link.href = url;
+        link.download = "edited-" + fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
       }
-
-      selectedElement = clickedElement;
-      selectedElement.classList.add("highlight");
-    }
-
-    function applySelectedColors() {
-      if (!selectedElement) {
-        alert("Please select an element by clicking on it!");
-        return;
-      }
-
-      const fillColor = document.getElementById("fillColorPicker").value;
-      const strokeColor = document.getElementById("strokeColorPicker").value;
-
-      if (selectedElement.hasAttribute("fill")) {
-        selectedElement.setAttribute("fill", fillColor);
-      }
-      if (selectedElement.hasAttribute("stroke")) {
-        selectedElement.setAttribute("stroke", strokeColor);
-      } else {
-        selectedElement.style.stroke = strokeColor;
-      }
-      renderSvgCode();
-    }
-
-    function renderSvgCode() {
-      const container = document.getElementById("svgCode");
-      container.value = document.getElementById("svgContainer").innerHTML;
-    }
-
-    function downloadSvg() {
-      if (!currentSvgDoc) {
-        alert("No SVG loaded to export!");
-        return;
-      }
-
-      const svgString = new XMLSerializer().serializeToString(currentSvgDoc);
-      const blob = new Blob([svgString], { type: "image/svg+xml" });
-      const url = URL.createObjectURL(blob);
-
-      const link = document.createElement("a");
-      link.href = url;
-      link.download = "edited-" + fileName;
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      URL.revokeObjectURL(url);
-    }
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
