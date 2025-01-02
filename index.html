@@ -60,9 +60,6 @@
             SVGEditor<span class="text-yellow-400">.pro</span>
           </h1>
           <div class="flex gap-4">
-            <a href="#features" class="hover:text-yellow-400 transition"
-              >Features</a
-            >
             <a href="#how-it-works" class="hover:text-yellow-400 transition"
               >How it Works</a
             >
@@ -170,39 +167,245 @@
         </div>
       </div>
 
-      <!-- Features Section -->
-      <section id="features" class="py-12">
-        <h2 class="text-3xl font-bold text-center mb-8">Features</h2>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div
-            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
-          >
-            <h3 class="text-xl font-semibold mb-2">Real-time Preview</h3>
-            <p class="text-gray-600">
-              See your changes instantly as you edit your SVG files.
-            </p>
+      <!-- How it Works Section -->
+      <section
+        id="how-it-works"
+        class="py-16 bg-gradient-to-br from-indigo-50 to-purple-50"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="flex items-center justify-center gap-2 mb-4">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"
+              />
+            </svg>
+            <h2 class="text-3xl font-bold text-center">How It Works</h2>
           </div>
-          <div
-            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
-          >
-            <h3 class="text-xl font-semibold mb-2">Color Customization</h3>
-            <p class="text-gray-600">
-              Easily modify fill and stroke colors with our intuitive color
-              picker.
-            </p>
+          <p class="text-gray-600 text-center max-w-2xl mx-auto mb-12">
+            Transform your SVG files in three simple steps. Our intuitive editor
+            makes it easy to customize and perfect your vector graphics.
+          </p>
+
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Step 1 -->
+            <div
+              class="relative bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+            >
+              <div
+                class="absolute -top-4 left-4 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold"
+              >
+                1
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="17 8 12 3 7 8" />
+                    <line x1="12" y1="3" x2="12" y2="15" />
+                  </svg>
+                  <h3 class="text-xl font-semibold">Upload Your SVG</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Simply drag and drop your SVG file into the editor or use the
+                  upload button to get started.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-2">
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Supports all SVG formats
+                  </li>
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Drag & drop enabled
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div
+              class="relative bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+            >
+              <div
+                class="absolute -top-4 left-4 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold"
+              >
+                2
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <circle cx="12" cy="12" r="10" />
+                    <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+                    <line x1="12" y1="17" x2="12.01" y2="17" />
+                  </svg>
+                  <h3 class="text-xl font-semibold">Customize Elements</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Click on any element in your SVG to select it, then use our
+                  tools to modify its appearance.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-2">
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Change colors instantly
+                  </li>
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Real-time preview
+                  </li>
+                </ul>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div
+              class="relative bg-white rounded-xl shadow-lg p-6 hover:shadow-xl transition-shadow"
+            >
+              <div
+                class="absolute -top-4 left-4 w-8 h-8 bg-indigo-600 text-white rounded-full flex items-center justify-center font-bold"
+              >
+                3
+              </div>
+              <div class="mt-4">
+                <div class="flex items-center gap-2 mb-3">
+                  <svg
+                    width="24"
+                    height="24"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                    <polyline points="7 10 12 15 17 10" />
+                    <line x1="12" y1="15" x2="12" y2="3" />
+                  </svg>
+                  <h3 class="text-xl font-semibold">Save & Export</h3>
+                </div>
+                <p class="text-gray-600 mb-4">
+                  Once you're satisfied with your changes, download the edited
+                  SVG file with one click.
+                </p>
+                <ul class="text-sm text-gray-500 space-y-2">
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Maintains original quality
+                  </li>
+                  <li class="flex items-center">
+                    <svg
+                      class="w-4 h-4 mr-2 text-green-500"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                    >
+                      <polyline points="20 6 9 17 4 12" />
+                    </svg>
+                    Instant download
+                  </li>
+                </ul>
+              </div>
+            </div>
           </div>
-          <div
-            class="bg-white p-6 rounded-lg shadow-md hover:shadow-lg transition"
-          >
-            <h3 class="text-xl font-semibold mb-2">Easy Export</h3>
-            <p class="text-gray-600">
-              Download your edited SVG files with a single click.
+
+          <!-- Call to Action -->
+          <div class="mt-16 text-center">
+            <p class="text-lg text-gray-600 mb-6">
+              Ready to enhance your SVG graphics?
             </p>
+            <button
+              onclick="document.getElementById('fileInput').click()"
+              class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-base font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+            >
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              >
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                <polyline points="17 8 12 3 7 8" />
+                <line x1="12" y1="3" x2="12" y2="15" />
+              </svg>
+              Start Editing Now
+            </button>
           </div>
         </div>
       </section>
     </main>
-
     <footer class="bg-gray-800 text-white py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -215,10 +418,14 @@
           <div class="text-right">
             <p>&copy; 2025 SVGEditor.pro. All rights reserved.</p>
             <div class="mt-2 space-x-4">
-              <a href="#" class="text-gray-300 hover:text-white transition"
+              <a
+                href="/privacy-policy.html"
+                class="text-gray-300 hover:text-white transition"
                 >Privacy Policy</a
               >
-              <a href="#" class="text-gray-300 hover:text-white transition"
+              <a
+                href="/terms-of-service.html"
+                class="text-gray-300 hover:text-white transition"
                 >Terms of Service</a
               >
             </div>
