@@ -47,6 +47,10 @@
       .smooth-transform {
         transition: all 0.3s ease-in-out;
       }
+      #svgContainer svg {
+        width: 300px;
+        height: 300px;
+      }
     </style>
   </head>
   <body
@@ -131,26 +135,32 @@
                 >
                   Apply Colors
                 </button>
-                <button
-                  onclick="undo()"
-                  class="p-2 text-gray-600 hover:text-indigo-600 transition"
-                >
-                  <span class="sr-only">Undo</span>
-                  ↩️
-                </button>
-                <button
-                  onclick="redo()"
-                  class="p-2 text-gray-600 hover:text-indigo-600 transition"
-                >
-                  <span class="sr-only">Redo</span>
-                  ↪️
-                </button>
+              </div>
+              <div>
+                <h1>Recent :</h1>
+                <div id="recentColors"></div>
               </div>
             </div>
           </div>
 
           <!-- Preview Area -->
           <div class="bg-gray-50 rounded-lg p-1 min-h-[400px] flex flex-col">
+            <div class="flex justify-center mb-1">
+              <button
+                onclick="undo()"
+                class="w-full border rounded-lg p-2 text-2xl font-bold text-gray-600 hover:text-indigo-300 hover:bg-indigo-700 transition"
+              >
+                <span class="sr-only text-lg">Undo</span>
+                <
+              </button>
+              <button
+                onclick="redo()"
+                class="w-full border rounded-lg p-2 text-2xl font-bold text-gray-600 hover:text-indigo-300 hover:bg-indigo-700 transition"
+              >
+                <span class="sr-only border">Redo</span>
+                >
+              </button>
+            </div>
             <div
               id="svgContainer"
               class="flex-1 flex items-center justify-center border-2 border-gray-200 rounded-lg bg-white"
@@ -161,7 +171,7 @@
             </div>
             <button
               onclick="downloadSvg()"
-              class="mt-2 w-full inline-flex justify-center items-center px-1 py-1 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
+              class="mt-4 w-full inline-flex justify-center items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition"
             >
               Download SVG
             </button>
@@ -445,7 +455,7 @@
       let fileName = null;
       const historyStack = [];
       const redoStack = [];
-
+      const recentColors = [];
       // Set up drag and drop
       const dropZone = document.getElementById("dropZone");
       dropZone.addEventListener("click", () =>
@@ -540,11 +550,23 @@
         saveState();
         const fillColor = document.getElementById("fillColorPicker").value;
         const strokeColor = document.getElementById("strokeColorPicker").value;
-
+        recentColors.push(fillColor);
+        recentColors.push(strokeColor);
+        renderRecentColors();
         selectedElement.setAttribute("fill", fillColor);
         selectedElement.setAttribute("stroke", strokeColor);
       }
 
+      function renderRecentColors() {
+        const recentColorsContainer = document.getElementById("recentColors");
+        let colors = "";
+        if (recentColors.length > 0) {
+          recentColors.forEach((color) => {
+            colors += " " + color;
+          });
+        }
+        recentColorsContainer.innerText = colors;
+      }
       function undo() {
         if (historyStack.length > 0) {
           redoStack.push(currentSvgDoc.cloneNode(true));
