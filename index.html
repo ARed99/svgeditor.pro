@@ -51,6 +51,10 @@
         width: 300px;
         height: 300px;
       }
+      .color-btn {
+        width: 40px;
+        height: 40px;
+      }
     </style>
   </head>
   <body
@@ -552,20 +556,34 @@
         const strokeColor = document.getElementById("strokeColorPicker").value;
         recentColors.push(fillColor);
         recentColors.push(strokeColor);
-        renderRecentColors();
         selectedElement.setAttribute("fill", fillColor);
         selectedElement.setAttribute("stroke", strokeColor);
+
+        renderRecentColors();
       }
 
       function renderRecentColors() {
         const recentColorsContainer = document.getElementById("recentColors");
-        let colors = "";
+        recentColorsContainer.innerHTML = "";
+        const recentColorsList = [...new Set(recentColors)];
         if (recentColors.length > 0) {
-          recentColors.forEach((color) => {
-            colors += " " + color;
+          recentColorsList.forEach((color) => {
+            const element = document.createElement("button");
+            element.classList.add("color-btn");
+            element.id = toString(color);
+            element.style.backgroundColor = color;
+            recentColorsContainer.appendChild(element);
           });
+          handleRecentColors();
         }
-        recentColorsContainer.innerText = colors;
+      }
+      function handleRecentColors() {
+        document.querySelectorAll("color-btn").forEach((btn) => {
+          console.log(btn);
+          btn.addEventListener("click", () => {
+            alert(btn.id);
+          });
+        });
       }
       function undo() {
         if (historyStack.length > 0) {
