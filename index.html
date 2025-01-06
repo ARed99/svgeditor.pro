@@ -55,6 +55,9 @@
         width: 40px;
         height: 40px;
       }
+      .hidden {
+        display: none;
+      }
     </style>
   </head>
   <body
@@ -424,6 +427,35 @@
           </div>
         </div>
       </section>
+      <!-- Add this modal structure to your HTML -->
+      <div
+        id="colorOptionModal"
+        class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center"
+      >
+        <div class="bg-white rounded-lg p-6 shadow-lg">
+          <p class="text-lg font-semibold mb-4">Apply color as:</p>
+          <div class="flex gap-4">
+            <button
+              id="applyFill"
+              class="px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition"
+            >
+              Fill
+            </button>
+            <button
+              id="applyStroke"
+              class="px-4 py-2 bg-purple-600 text-white rounded-md hover:bg-purple-700 transition"
+            >
+              Stroke
+            </button>
+          </div>
+          <button
+            onclick="closeModal()"
+            class="mt-4 w-full px-4 py-2 bg-gray-300 text-gray-700 rounded-md hover:bg-gray-400 transition"
+          >
+            Cancel
+          </button>
+        </div>
+      </div>
     </main>
     <footer class="bg-gray-800 text-white py-8">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -457,6 +489,7 @@
       let currentSvgDoc = null;
       let selectedElement = null;
       let fileName = null;
+      let selectedColor = null;
       const historyStack = [];
       const redoStack = [];
       const recentColors = [];
@@ -570,20 +603,45 @@
           recentColorsList.forEach((color) => {
             const element = document.createElement("button");
             element.classList.add("color-btn");
-            element.id = toString(color);
+            element.dataset.color = color; // Use data attribute to store color
             element.style.backgroundColor = color;
             recentColorsContainer.appendChild(element);
           });
           handleRecentColors();
         }
       }
+
       function handleRecentColors() {
-        document.querySelectorAll("color-btn").forEach((btn) => {
-          console.log(btn);
-          btn.addEventListener("click", () => {
-            alert(btn.id);
+        document.querySelectorAll(".color-btn").forEach((btn) => {
+          btn.addEventListener("click", (e) => {
+            selectedColor = e.target.dataset.color; // Store the selected color
+            openModal();
           });
         });
+      }
+
+      function openModal() {
+        const modal = document.getElementById("colorOptionModal");
+        modal.classList.remove("hidden");
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("colorOptionModal");
+        modal.classList.add("hidden");
+      }
+
+      function applyColor(option) {
+        if (selectedColor && selectedElement) {
+          if (option === "fill") {
+            selectedElement.setAttribute("fill", selectedColor);
+          } else if (option === "stroke") {
+            selectedElement.setAttribute("stroke", selectedColor);
+          }
+          closeModal();
+        } else if (!selectedElement) {
+          alert("Please select an element first!");
+          closeModal();
+        }
       }
       function undo() {
         if (historyStack.length > 0) {
@@ -619,6 +677,13 @@
         document.body.removeChild(link);
         URL.revokeObjectURL(url);
       }
+
+      document
+        .getElementById("applyFill")
+        .addEventListener("click", () => applyColor("fill"));
+      document
+        .getElementById("applyStroke")
+        .addEventListener("click", () => applyColor("stroke"));
     </script>
   </body>
 </html>
