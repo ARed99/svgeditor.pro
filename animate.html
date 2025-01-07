@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Animation Creator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      canvas {
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-100 flex flex-col items-center justify-center min-h-screen"
+  >
+    <div class="bg-white p-6 rounded-lg shadow-lg">
+      <h1 class="text-2xl font-bold mb-4">Animation Creator</h1>
+      <canvas id="canvas" width="600" height="400" class="bg-white"></canvas>
+      <div class="mt-4">
+        <button id="clearBtn" class="bg-red-500 text-white px-4 py-2 rounded">
+          Clear Canvas
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const canvas = document.getElementById("canvas");
+      const ctx = canvas.getContext("2d");
+      const clearBtn = document.getElementById("clearBtn");
+
+      let isDrawing = false;
+      let lastX = 0;
+      let lastY = 0;
+      let hue = 0;
+      let direction = true;
+      let shiftPressed = false;
+
+      canvas.addEventListener("mousedown", (e) => {
+        isDrawing = true;
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+      });
+
+      canvas.addEventListener("mousemove", (e) => {
+        if (!isDrawing) return;
+
+        ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+        ctx.lineWidth = 5;
+        ctx.lineCap = "round";
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+
+        if (shiftPressed) {
+          // Draw straight lines when shift is pressed
+          ctx.lineTo(e.offsetX, lastY);
+          ctx.lineTo(e.offsetX, e.offsetY);
+        } else {
+          ctx.lineTo(e.offsetX, e.offsetY);
+        }
+
+        ctx.stroke();
+        [lastX, lastY] = [e.offsetX, e.offsetY];
+
+        hue++;
+        if (hue >= 360) {
+          hue = 0;
+        }
+
+        if (ctx.lineWidth >= 50 || ctx.lineWidth <= 1) {
+          direction = !direction;
+        }
+
+        if (direction) {
+          ctx.lineWidth++;
+        } else {
+          ctx.lineWidth--;
+        }
+      });
+
+      canvas.addEventListener("mouseup", () => (isDrawing = false));
+      canvas.addEventListener("mouseout", () => (isDrawing = false));
+
+      window.addEventListener("keydown", (e) => {
+        if (e.key === "Shift") {
+          shiftPressed = true;
+        }
+      });
+
+      window.addEventListener("keyup", (e) => {
+        if (e.key === "Shift") {
+          shiftPressed = false;
+        }
+      });
+
+      clearBtn.addEventListener("click", () => {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+      });
+    </script>
+  </body>
+</html>
